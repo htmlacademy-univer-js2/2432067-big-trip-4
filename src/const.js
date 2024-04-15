@@ -40,9 +40,7 @@ export const PRICE = {
   max: 3000
 };
 export const TIME_PERIODS = {
-  DAY_IN_YEAR: 365,
-  HOUR_IN_DAY: 24,
   MIN_IN_HOUR: 60,
-  SEC_IN_MIN: 60,
-  MSEC_IN_SEC: 1000
+  MIN_IN_DAY: 1440,
+  MIN_IN_YEAR: 525600
 };
