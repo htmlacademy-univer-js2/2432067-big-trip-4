@@ -1,5 +1,5 @@
-import { POINT_TYPES, OFFERS, PRICE } from '../consts';
-import { getRandomArrayElement, getRandomInteger } from '../utils';
+import { POINT_TYPES, OFFERS, PRICE } from '../consts.js';
+import { getRandomArrayElement, getRandomInteger } from '../utils.js';
 
 const generateOffer = () => ({
   id: crypto.randomUUID(),

@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
-import { humanizeDate, getDuration, upperFirstChar } from '../utils.js';
+import { upperFirstChar } from '../utils.js';
+import { humanizeDate, getDuration } from '../utils/point.js';
 
 function createOffers(offers) {
   return offers ? offers.map((offer) =>
