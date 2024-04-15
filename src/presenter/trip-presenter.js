@@ -6,20 +6,23 @@ import SortView from '../view/sort-view.js';
 import { render } from '../render.js';
 
 export default class TripPresenter {
-  sortComponent = new SortView();
-  pointListComponent = new PointListView();
-
-  constructor({ container }) {
-    this.container = container;
+  constructor({ tripContainer, pointsModel }) {
+    this.tripContainer = tripContainer;
+    this.pointsModel = pointsModel;
   }
 
   init() {
-    render(this.sortComponent, this.container);
-    render(this.pointListComponent, this.container);
-    render(new EditPointView, this.pointListComponent.getElement());
+    this.points = [...this.pointsModel.getPoints()];
+    this.itemsOfList = [new EditPointView({ point: this.points[0], offersOfThisType: this.pointsModel.offersModel.getOffersByType(this.points[0].type) }).getTemplate()];
 
-    for (let i = 0; i < 3; i++) {
-      render(new PointView, this.pointListComponent.getElement());
+    for (let i = 1; i < this.points.length; i++) {
+      this.itemsOfList.push(new PointView({ point: this.points[i] }).getTemplate());
     }
+
+    render(new SortView(), this.tripContainer);
+    render(
+      new PointListView({ items: this.itemsOfList }),
+      this.tripContainer
+    );
   }
 }
