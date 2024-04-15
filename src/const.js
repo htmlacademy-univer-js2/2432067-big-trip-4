@@ -1,6 +1,6 @@
+export const POINT_COUNT = Math.round(5 * Math.random());
 export const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 export const DESTINATIONS = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Saint Petersburg', 'Vienna'];
-export const FILTER_TYPES = ['everything', 'future', 'present', 'past'];
 export const OFFERS = ['Add luggage', 'Switch to comfort class', 'Add meal', 'Choose seats', 'Travel by train'];
 export const DESCRIPTIONS = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   'Cras aliquet varius magna, non porta ligula feugiat eget',
@@ -39,7 +39,13 @@ export const PRICE = {
   min: 40,
   max: 3000
 };
-export const TIME_PERIODS = {
+export const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+export const TimePeriods = {
   MIN_IN_HOUR: 60,
   MIN_IN_DAY: 1440,
   MIN_IN_YEAR: 525600

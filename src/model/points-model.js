@@ -1,6 +1,5 @@
-import { generatePoint } from '../mock/point';
-
-const POINT_COUNT = 6;
+import { generatePoint } from '../mock/point.js';
+import { POINT_COUNT } from '../const.js';
 
 export default class PointsModel {
   #points;
