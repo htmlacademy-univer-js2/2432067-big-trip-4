@@ -12,16 +12,16 @@ function getRandomInteger(min, max) {
   return Math.round((max - min) * Math.random() + min);
 }
 
-function humanizeDueDate(date, format) {
-  return date ? dayjs(date).format(format) : '';
+function humanizeDate(date, format) {
+  return date ? dayjs(date).format(format) : dayjs().format(format);
 }
 
 function getDuration(dateFrom, dateTo) {
   const timeDiff = dayjs(dateTo).diff(dayjs(dateFrom), 'minute');
 
-  if (timeDiff >= TIME_PERIODS.MIN_IN_HOUR * TIME_PERIODS.HOUR_IN_DAY * TIME_PERIODS.DAY_IN_YEAR) {
+  if (timeDiff >= TIME_PERIODS.MIN_IN_YEAR) {
     return dayjs.duration(timeDiff, 'minutes').format('YY[Y] DD[D] HH[H] mm[M]');
-  } else if (timeDiff >= TIME_PERIODS.MIN_IN_HOUR * TIME_PERIODS.HOUR_IN_DAY) {
+  } else if (timeDiff >= TIME_PERIODS.MIN_IN_DAY) {
     return dayjs.duration(timeDiff, 'minutes').format('DD[D] HH[H] mm[M]');
   } else if (timeDiff >= TIME_PERIODS.MIN_IN_HOUR) {
     return dayjs.duration(timeDiff, 'minutes').format('HH[H] mm[M]');
@@ -38,4 +38,4 @@ function getLastWord(string) {
 function upperFirstChar(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
-export { getRandomArrayElement, getRandomInteger, humanizeDueDate, getDuration, getLastWord, upperFirstChar};
+export { getRandomArrayElement, getRandomInteger, humanizeDate, getDuration, getLastWord, upperFirstChar};
