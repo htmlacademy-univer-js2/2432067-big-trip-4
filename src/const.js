@@ -1,52 +1,31 @@
-export const POINT_COUNT = Math.round(5 * Math.random());
-export const POINT_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+export const PHOTOS_COUNT = 20;
+export const MAX_PRICE = 2000;
+export const MAX_OFFER_ID = 5;
+export const POINTS_COUNT = 4;
+
+export const PRESENTER_MODES = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
+export const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 export const DESTINATIONS = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Saint Petersburg', 'Vienna'];
-export const OFFERS = ['Add luggage', 'Switch to comfort class', 'Add meal', 'Choose seats', 'Travel by train'];
-export const DESCRIPTIONS = ['Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  'Cras aliquet varius magna, non porta ligula feugiat eget',
-  'Fusce tristique felis at fermentum pharetra.',
-  'Aliquam id orci ut lectus varius viverra.',
-  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
-  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
-  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
-  'Sed sed nisi sed augue convallis suscipit in sed felis.',
-  'Aliquam erat volutpat.',
-  'Nunc fermentum tortor ac porta dapibus.',
-  'In rutrum ac purus sit amet tempus.'];
-export const DATE = [
-  {
-    from: '2024-03-18T10:30',
-    to: '2024-03-18T16:00'
+export const BLANC_TEST =
+{
+  type: null,
+  destination: null,
+  cost: 0,
+  date: {
+    start: null,
+    end: null,
   },
-  {
-    from: '2024-03-18T16:20',
-    to: '2024-03-18T17:00'
+  offers: {
+    id: 0
   },
-  {
-    from: '2024-03-19T14:20',
-    to: '2024-03-19T15:00'
-  },
-  {
-    from: '2024-03-19T16:00',
-    to: '2024-03-19T17:00'
-  },
-  {
-    from: '2024-03-19T18:00',
-    to: '2024-03-19T19:00'
-  }
-];
-export const PRICE = {
-  min: 40,
-  max: 3000
+  desctiption:'',
+  photosSrc: []
 };
-export const FilterType = {
-  EVERYTHING: 'everything',
-  FUTURE: 'future',
-  PRESENT: 'present',
-  PAST: 'past',
-};
-export const TimePeriods = {
-  MIN_IN_HOUR: 60,
-  MIN_IN_DAY: 1440,
-  MIN_IN_YEAR: 525600
-};
+
+export const DATE_FORMAT_EDIT = 'DD/MM/YY hh:mm';
+export const DATE_FORMAT_POINT_DAY = 'MMM DD';
+export const DATE_FORMAT_POINT_HOURS = 'hh-mm';

@@ -1,14 +1,9 @@
-import { generatePoint } from '../mock/point.js';
-import { POINT_COUNT } from '../const.js';
+import {getRandomPoint} from '../mock/point.js';
+import { POINTS_COUNT } from '../const.js';
 
 export default class PointsModel {
-  #points;
-
-  constructor() {
-    this.#points = Array.from({ length: POINT_COUNT }, generatePoint);
-  }
-
-  getPoints() {
+  #points = Array.from({length: POINTS_COUNT}, getRandomPoint);
+  get points() {
     return this.#points;
   }
 }

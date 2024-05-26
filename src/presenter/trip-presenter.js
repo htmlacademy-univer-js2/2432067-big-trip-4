@@ -1,75 +1,95 @@
-import { render, replace } from '../framework/render.js';
-import PointListView from '../view/point-list-view.js';
-import EditPointView from '../view/edit-point-view.js';
-import PointView from '../view/point-view.js';
 import SortView from '../view/sort-view.js';
-import NoPointView from '../view/no-point-view.js';
+import FiltersView from '../view/filters-view.js';
+import TripsContainer from '../view/tripsContainer-view.js';
+import {render} from '../framework/render.js';
+import EmptyPointsView from '../view/no-point-view.js';
+import PointPresenter from './point-presenter.js';
+import { updateItem } from '../utils.js';
 
 export default class TripPresenter {
-  #tripContainer = null;
-  #pointsModel = null;
-  #points = null;
-  #pointsListComponent = null;
+  #pointsContainer = new TripsContainer();
+  #headerElement;
+  #pointsElement;
+  #pointsModel;
+  #filterModel;
 
-  constructor({ tripContainer, pointsModel }) {
-    this.#tripContainer = tripContainer;
+  #pointPresenters = new Map();
+
+  #points = [];
+  constructor({headerElement, tripsElement, pointsModel, filterModel}) {
+    this.#headerElement = headerElement;
+    this.#pointsElement = tripsElement;
     this.#pointsModel = pointsModel;
+    this.#filterModel = filterModel;
   }
 
   init() {
     this.#points = [...this.#pointsModel.points];
-    this.#renderList();
+    this.#renderComponents();
   }
 
-  #renderList() {
-    if (!this.#points.length) {
-      render(new NoPointView(), this.#tripContainer);
-      return;
+  #renderPoint = (point) => {
+    const pointPresenter = new PointPresenter(
+      {
+        pointsContainer: this.#pointsElement,
+        onPointChange: this.#onPointChange,
+        onModeChange: this.#onModeChange
+      }
+    );
+    pointPresenter.init(point);
+    this.#pointPresenters.set(point.id, pointPresenter);
+  };
+
+  #onModeChange = () => {
+    this.#pointPresenters.forEach((presenter) => presenter.resetView());
+  };
+
+  #renderEmptyPoints(){
+    render(new EmptyPointsView(), this.#pointsElement);
+  }
+
+  #renderSort(){
+    render(new FiltersView(this.#filterModel), this.#headerElement);
+  }
+
+  #renderFilters(){
+    render(new SortView(), this.#pointsElement);
+  }
+
+  #renderPointsContainer(){
+    render(this.#pointsContainer, this.#pointsElement);
+  }
+
+  #initPoints(){
+    this.#renderPointsContainer();
+
+    if(this.#points.length === 0){
+      this.#renderEmptyPoints();
     }
-
-    this.#pointsListComponent = new PointListView();
-
-    render(new SortView(), this.#tripContainer);
-    render(this.#pointsListComponent, this.#tripContainer);
-
-    for (let i = 0; i < this.#points.length; i++) {
-      this.#renderPoint(this.#points[i]);
+    else{
+      this.#renderPoints();
     }
   }
 
-  #renderPoint(point) {
-    const escKeyDownHandler = (evt) => {
-      if (evt.key === 'Escape') {
-        evt.preventDefault();
-        replaceFormToCard();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    };
+  #clearPoints() {
+    this.#pointPresenters.forEach((presenter) => presenter.destroy());
+    this.#pointPresenters.clear();
+  }
 
-    const pointComponent = new PointView({
-      point,
-      onEditClick: () => {
-        replaceCardToForm();
-        document.addEventListener('keydown', escKeyDownHandler);
-      }
+  #renderComponents() {
+    this.#renderSort();
+    this.#renderFilters();
+    this.#initPoints();
+  }
+
+  #renderPoints() {
+    this.#points.forEach((point) => {
+      this.#renderPoint(point);
     });
-
-    const pointEditComponent = new EditPointView({
-      point,
-      onFormSubmit: () => {
-        replaceFormToCard();
-        document.removeEventListener('keydown', escKeyDownHandler);
-      }
-    });
-
-    function replaceCardToForm() {
-      replace(pointEditComponent, pointComponent);
-    }
-
-    function replaceFormToCard() {
-      replace(pointComponent, pointEditComponent);
-    }
-
-    render(pointComponent, this.#pointsListComponent.element);
   }
+
+  #onPointChange = (newPoint) => {
+    this.#points = updateItem(this.#points, newPoint);
+    this.#pointPresenters.get(newPoint.id).init(newPoint);
+  };
 }
