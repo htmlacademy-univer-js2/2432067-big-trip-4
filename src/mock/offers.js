@@ -9,7 +9,7 @@ const OFFERS = {
   ],
   1: [
     {
-      text: 'Rent a car +',
+      text: 'Rent a car',
       cost: 80,
       name: 'event-offer-rent',
       checked: false,
@@ -31,7 +31,7 @@ const OFFERS = {
   ],
   3:[
     {
-      text:'Add breakfast +',
+      text:'Add breakfast',
       cost: 50,
       name: 'event-offer-breakfast',
       checked: false,
