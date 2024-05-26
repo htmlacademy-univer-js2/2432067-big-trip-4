@@ -4,12 +4,13 @@ import { remove, render } from '../framework/render.js';
 import EmptyPointsView from '../view/no-point-view.js';
 import PointPresenter from './point-presenter.js';
 import { sortByTime, sortByPrice, sortByDefault, filter } from '../utils.js';
-import { SORT_TYPES, UPDATE_TYPES, USER_ACTIONS, FILTER_TYPES } from '../const.js';
+import { SORT_TYPES, UPDATE_TYPES, USER_ACTIONS, FILTER_TYPES, TIME_LIMIT } from '../const.js';
 import FilterPresenter from './filter-presenter.js';
 import AddPointPresenter from './add-point-presenter.js';
 import LoadingView from '../view/loading-view.js';
 import addPointButtonView from '../view/button-view.js';
 import Observable from '../framework/observable.js';
+import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
 
 export default class Presenter extends Observable{
   #pointsContainer = new TripsContainer();
@@ -29,6 +30,17 @@ export default class Presenter extends Observable{
   #destinationsModel;
   #addPointPresenter;
   #filtersElement;
+
+  #uiBlocker = new UiBlocker({
+    lowerLimit: TIME_LIMIT.LOWER_LIMIT,
+    upperLimit: TIME_LIMIT.UPPER_LIMIT
+  });
+
+  addPointButtonComponent = new addPointButtonView({
+    onClick: () => {
+      this.#createPoint();
+      this.addPointButtonComponent.element.disabled = true;
+    }});
 
   constructor(
     {
@@ -64,21 +76,6 @@ export default class Presenter extends Observable{
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
-
-  handleAddPointButtonClick = () => {
-    this.#createPoint();
-    this.addPointButtonComponent.element.disabled = true;
-  };
-
-
-  addPointButtonComponent = new addPointButtonView({
-    onClick: this.handleAddPointButtonClick
-  });
-
-  onAddTaskClose() {
-    this.addPointButtonComponent.element.disabled = false;
-  }
-
 
   #createPoint() {
     this.#currentSort = SORT_TYPES.DEFAULT;
@@ -140,18 +137,36 @@ export default class Presenter extends Observable{
     });
   }
 
-  #handleViewAction = (actionType, updateType, newPoint) => {
+  #handleViewAction = async (actionType, updateType, newPoint) => {
+    this.#uiBlocker.block();
     switch (actionType) {
       case USER_ACTIONS.UPDATE_POINT:
-        this.#pointsModel.updatePoint(updateType, newPoint);
+        this.#pointPresenters.get(newPoint.id).setSaving();
+        try{
+          await this.#pointsModel.updatePoint(updateType, newPoint);
+        } catch(err){
+          this.#pointPresenters.get(newPoint.id).setAbording();
+        }
         break;
       case USER_ACTIONS.ADD_POINT:
-        this.#pointsModel.addPoint(updateType, newPoint);
+        this.#addPointPresenter.setSaving();
+        try{
+          await this.#pointsModel.addPoint(updateType, newPoint);
+        } catch (err){
+          this.#addPointPresenter.setAbording();
+        }
         break;
       case USER_ACTIONS.DELETE_POINT:
-        this.#pointsModel.deletePoint(updateType, newPoint);
+        this.#pointPresenters.get(newPoint.id).setDeleting();
+        try{
+          await this.#pointsModel.deletePoint(updateType, newPoint);
+        } catch (err) {
+          this.pointPresenters.get(newPoint.id).setAbording();
+        }
         break;
     }
+
+    this.#uiBlocker.unblock();
   };
 
   #handleModelEvent = (updateType, data) => {
@@ -169,9 +184,9 @@ export default class Presenter extends Observable{
         break;
       case UPDATE_TYPES.INIT:
         this.#addPointPresenter = new AddPointPresenter({
-          pointsContainer: this.#mainContainerElement,
+          pointsContainer: this.#pointsContainer,
           onDataChange: this.#handleViewAction,
-          onDestroy: this.onAddTaskClose,
+          onDestroy: () => {this.addPointButtonComponent.element.disabled = false;},
           allOffers: this.#offersModel.offers,
           allDestinations: this.#destinationsModel.destinations,
         });
@@ -209,7 +224,7 @@ export default class Presenter extends Observable{
 
   #clearComponents({ resetSortType = false} = {}) {
     this.#addPointPresenter.destroy();
-    remove(this.#pointsContainer);
+
     this.#clearPoints();
     remove(this.#sortElement);
     remove(this.#loadingComponent);

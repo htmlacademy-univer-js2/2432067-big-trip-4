@@ -1,6 +1,5 @@
 import { remove, render, RenderPosition } from '../framework/render.js';
 import EditorView from '../view/edit-view.js';
-import { nanoid } from 'nanoid';
 import { USER_ACTIONS, UPDATE_TYPES } from '../const.js';
 import { isEscKey } from '../utils.js';
 
@@ -13,7 +12,7 @@ export default class AddPointPresenter {
   #destinations;
 
   constructor({pointsContainer, onDataChange, onDestroy, allOffers, allDestinations}) {
-    this.#pointsContainer = pointsContainer;
+    this.#pointsContainer = pointsContainer.element;
     this.#onDataChange = onDataChange;
     this.#onDestroy = onDestroy;
     this.#offers = allOffers;
@@ -32,7 +31,7 @@ export default class AddPointPresenter {
       deletePoint: this.#handleDeleteClick
     });
 
-    render(this.#editorComponent, this.#pointsContainer, RenderPosition.BEFOREBEGIN);
+    render(this.#editorComponent, this.#pointsContainer, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
@@ -50,6 +49,25 @@ export default class AddPointPresenter {
     document.removeEventListener('keydown', this.#escKeyDownHandler);
   }
 
+  setSaving() {
+    this.#editorComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAbording() {
+    const resetFormState = () => {
+      this.#editorComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editorComponent.shake(resetFormState);
+  }
+
   #handleFormSubmit = (point) => {
     if(point === undefined){
       return;
@@ -57,9 +75,8 @@ export default class AddPointPresenter {
     this.#onDataChange(
       USER_ACTIONS.ADD_POINT,
       UPDATE_TYPES.MINOR,
-      {id: nanoid(), ...point},
+      {...point, isFavorite : false},
     );
-    this.destroy();
   };
 
   #handleDeleteClick = () => {
