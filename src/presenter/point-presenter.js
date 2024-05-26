@@ -1,8 +1,8 @@
 import { render, replace, remove } from '../framework/render.js';
 import EditorView from '../view/edit-view.js';
 import TripsView from '../view/points-view.js';
-import { PRESENTER_MODES } from '../const.js';
-
+import {USER_ACTIONS, UPDATE_TYPES, PRESENTER_MODES } from '../const.js';
+import { isEscKey } from '../utils.js';
 
 export default class PointPresenter {
 
@@ -22,8 +22,9 @@ export default class PointPresenter {
   }
 
   #onDocumentKeyDown = (evt) => {
-    if (evt.key === 'Escape') {
+    if (isEscKey(evt.key)) {
       evt.preventDefault();
+      this.#editComponent.reset(this.#point);
       this.#replaceEditToPoint();
       document.removeEventListener('keydown', this.#onDocumentKeyDown);
     }
@@ -43,17 +44,15 @@ export default class PointPresenter {
           document.addEventListener('keydown', this.#onDocumentKeyDown);
         },
         onFavoriteClick: this.#onFavoriteClick,
+        onSubmit: this.#onFormSubmit
       }
     );
 
     this.#editComponent = new EditorView(
       {
         point: this.#point,
-        onEditClick: () =>{
-          this.#replaceEditToPoint();
-          document.removeEventListener('keydown', this.#onDocumentKeyDown);
-        },
-        onPointChange: this.#onPointChange
+        onSubmit: this.#onFormSubmit,
+        deletePoint: this.#onDeletePoint
       }
     );
 
@@ -76,6 +75,7 @@ export default class PointPresenter {
 
   resetView(){
     if (this.#mode !== PRESENTER_MODES.DEFAULT){
+      this.#editComponent.reset(this.#point);
       this.#replaceEditToPoint();
     }
   }
@@ -87,16 +87,48 @@ export default class PointPresenter {
 
   #replacePointToEdit () {
     replace(this.#editComponent, this.#pointComponent);
+    document.addEventListener('keydown', this.#onDocumentKeyDown);
     this.#onModeChange();
     this.#mode = PRESENTER_MODES.EDITING;
   }
 
   #replaceEditToPoint () {
     replace(this.#pointComponent, this.#editComponent);
+    document.removeEventListener('keydown', this.#onDocumentKeyDown);
     this.#mode = PRESENTER_MODES.DEFAULT;
   }
 
+  #onFormSubmit = (update) => {
+    if(update === undefined){
+      this.#editComponent.reset(this.#point);
+      this.#replaceEditToPoint();
+      return;
+    }
+    const isMajor = () =>
+      update.cost !== this.#point.cost ||
+        update.date.start !== this.#point.date.start ||
+        update.type !== this.#point.type;
+
+    this.#onPointChange(
+      USER_ACTIONS.UPDATE_POINT,
+      isMajor() ? UPDATE_TYPES.MAJOR : UPDATE_TYPES.MINOR,
+      update
+    );
+  };
+
+  #onDeletePoint = (point) =>{
+    this.#onPointChange(
+      USER_ACTIONS.DELETE_POINT,
+      UPDATE_TYPES.MAJOR,
+      point,
+    );
+  };
+
   #onFavoriteClick = ( ) => {
-    this.#onPointChange({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#onPointChange(
+      USER_ACTIONS.UPDATE_POINT,
+      UPDATE_TYPES.MINOR,
+      {...this.#point, isFavorite: !this.#point.isFavorite},
+    );
   };
 }

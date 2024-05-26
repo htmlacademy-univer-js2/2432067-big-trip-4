@@ -1,6 +1,6 @@
-import { getRandomArrayElement, getRandomInt } from '../utils';
-import { POINT_TYPES, DESTINATIONS, POINTS_COUNT, PHOTOS_COUNT, MAX_PRICE, DATES } from '../const';
-import { OFFERS, getOffersId } from './offers';
+import { getRandomArrayElement, getRandomInt } from '../utils.js';
+import { POINT_TYPES, DESTINATIONS, POINTS_COUNT, PHOTOS_COUNT, MAX_PRICE, DATES } from '../const.js';
+import { OFFERS, getOffersId } from './offers.js';
 import { nanoid } from 'nanoid';
 
 const createPoint = () =>({

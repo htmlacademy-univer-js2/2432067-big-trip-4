@@ -1,6 +1,7 @@
+import { OFFERS, getOffersId } from './mock/offers.js';
+
 export const PHOTOS_COUNT = 20;
 export const MAX_PRICE = 2000;
-export const MAX_OFFER_ID = 5;
 export const POINTS_COUNT = 4;
 
 export const PRESENTER_MODES = {
@@ -16,22 +17,46 @@ export const SORT_TYPES = {
   BY_NAME: 'name',
 };
 
+export const USER_ACTIONS = {
+  UPDATE_POINT: 'update',
+  ADD_POINT: 'add',
+  DELETE_POINT: 'delete',
+};
+
+
+export const UPDATE_TYPES = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};
+
+export const FILTER_TYPES = {
+  ALL: 'everything',
+  FUTURE: 'future',
+  PRESENT: 'present',
+  PAST: 'past',
+};
+
 export const DATES = [
-  {
-    start: new Date(Date.UTC(2024, 8, 28, 8, 15, 0, 0)),
-    end: new Date(Date.UTC(2024, 8, 28, 10, 16, 0, 0))
-  },
-  {
-    start: new Date(Date.UTC(2024, 8, 20, 18, 30, 10, 0)),
-    end: new Date(Date.UTC(2024, 8, 21, 22, 30, 10, 0))
-  },
   {
     start: new Date(Date.UTC(2024, 8, 25, 11, 14, 0, 0)),
     end: new Date(Date.UTC(2024, 8, 25, 14, 0, 0, 0))
   },
   {
-    start: new Date(Date.UTC(2024, 8, 25, 12, 1, 0, 0)),
-    end: new Date(Date.UTC(2024, 8, 25, 12, 2, 0, 0))
+    start: new Date(Date.UTC(2024, 5, 25, 12, 1, 0, 0)),
+    end: new Date(Date.UTC(2024, 5, 25, 12, 2, 0, 0))
+  },
+  {
+    start: new Date(Date.UTC(2024, 5, 11, 12, 1, 0, 0)),
+    end: new Date(Date.UTC(2024, 5, 25, 12, 2, 0, 0))
+  },
+  {
+    start: new Date(Date.UTC(2024, 0, 25, 12, 1, 0, 0)),
+    end: new Date(Date.UTC(2024, 0, 25, 12, 2, 0, 0))
+  },
+  {
+    start: new Date(Date.UTC(2024, 4, 10, 12, 1, 0, 0)),
+    end: new Date(Date.UTC(2024, 4, 20, 12, 2, 0, 0))
   },
 ];
 
@@ -40,7 +65,7 @@ export const DESTINATIONS = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Saint 
 
 export const BLANC_TEST =
 {
-  type: null,
+  type: 'Bus',
   destination: null,
   cost: 0,
   date: {
@@ -50,8 +75,10 @@ export const BLANC_TEST =
   offers: {
     id: 0
   },
+  activeOffers:
+    OFFERS[getOffersId('default')],
   desctiption:'',
-  photosSrc: []
+  photosSrc: ['https://loremflickr.com/248/152?random=$0)']
 };
 
 export const DATE_FORMAT_EDIT = 'DD/MM/YY hh:mm';
