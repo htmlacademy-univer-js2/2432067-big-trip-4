@@ -8,8 +8,32 @@ export const PRESENTER_MODES = {
   EDITING: 'EDITING',
 };
 
+export const SORT_TYPES = {
+  DEFAULT: 'default',
+  BY_PRICE: 'price',
+  BY_TIME: 'time',
+  BY_OFFERS: 'offers',
+  BY_NAME: 'name',
+};
+
+export const DATES = [
+  {
+    start: new Date(Date.UTC(2024, 8, 28, 8, 15, 0, 0)),
+    end: new Date(Date.UTC(2024, 8, 28, 10, 15, 0, 0))
+  },
+  {
+    start: new Date(Date.UTC(2024, 8, 21, 18, 30, 10, 0)),
+    end: new Date(Date.UTC(2024, 8, 21, 20, 30, 10, 0))
+  },
+  {
+    start: new Date(Date.UTC(2024, 8, 25, 12, 0, 0, 0)),
+    end: new Date(Date.UTC(2024, 8, 25, 14, 0, 0, 0))
+  },
+];
+
 export const POINT_TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
 export const DESTINATIONS = ['Amsterdam', 'Chamonix', 'Geneva', 'Paris', 'Saint Petersburg', 'Vienna'];
+
 export const BLANC_TEST =
 {
   type: null,

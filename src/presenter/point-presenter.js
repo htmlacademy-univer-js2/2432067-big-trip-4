@@ -9,7 +9,6 @@ export default class PointPresenter {
   #pointComponent = null;
   #editComponent = null;
   #point = null;
-
   #pointsContainer = null;
   #onPointChange = null;
   #onModeChange = null;
