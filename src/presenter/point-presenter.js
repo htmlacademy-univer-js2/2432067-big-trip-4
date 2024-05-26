@@ -82,11 +82,47 @@ export default class PointPresenter {
     }
 
     if(this.#mode === PRESENTER_MODES.EDITING){
-      replace(this.#editComponent, prevEdit);
+      replace(this.#pointComponent, prevEdit);
+      this.#mode = PRESENTER_MODES.DEFAULT;
     }
 
     remove(prevPoint);
     remove(prevEdit);
+  }
+
+  setSaving() {
+    if (this.#mode === PRESENTER_MODES.EDITING) {
+      this.#editComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  }
+
+  setDeleting() {
+    if (this.#mode === PRESENTER_MODES.EDITING) {
+      this.#editComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  }
+
+  setAborting() {
+    if (this.#mode === PRESENTER_MODES.DEFAULT) {
+      this.#editComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#editComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#editComponent.shake(resetFormState);
   }
 
   resetView(){

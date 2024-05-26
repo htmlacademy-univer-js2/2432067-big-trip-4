@@ -43,7 +43,7 @@ export default class PointsModel extends Observable {
       ];
       this._notify(updateType, updatedPoint);
     } catch(err) {
-      throw new Error('Can\'t update task');
+      throw new Error('Can\'t update point');
     }
   }
 
@@ -62,15 +62,21 @@ export default class PointsModel extends Observable {
     return adapted;
   }
 
-  addPoint(updateType, newPoint){
-    this.#points = [
-      newPoint,
-      ...this.#points,
-    ];
-    this._notify(updateType, newPoint);
+  async addPoint(updateType, newPoint){
+    try {
+
+      const response = await this.#pointsApiService.addPoint(newPoint);
+      const adaptedResponse = this.#adaptToClientPoints(response);
+      this.#points = [adaptedResponse, ...this.#points];
+
+      this._notify(updateType, adaptedResponse);
+    } catch(err) {
+      throw new Error(err);
+
+    }
   }
 
-  deletePoint(updateType, newPoint){
+  async deletePoint(updateType, newPoint){
 
     const index = this.#points.findIndex((task) => task.id === newPoint.id);
 
@@ -78,11 +84,15 @@ export default class PointsModel extends Observable {
       throw new Error('can\'t find point' );
     }
 
-    this.#points = [
-      ...this.#points.slice(0, index),
-      ...this.#points.slice(index + 1),
-    ];
-
-    this._notify(updateType);
+    try {
+      await this.#pointsApiService.deletePoint(newPoint);
+      this.#points = [
+        ...this.#points.slice(0, index),
+        ...this.#points.slice(index + 1),
+      ];
+      this._notify(updateType);
+    } catch(err) {
+      throw new Error('Can\'t delete point');
+    }
   }
 }
