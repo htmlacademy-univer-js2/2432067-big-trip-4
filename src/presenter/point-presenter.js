@@ -13,12 +13,15 @@ export default class PointPresenter {
   #onPointChange = null;
   #onModeChange = null;
   #mode = PRESENTER_MODES.DEFAULT;
+  #offers;
+  #destinations;
 
-  constructor({pointsContainer, onPointChange, onModeChange}){
+  constructor({offers, destinations, pointsContainer, onPointChange, onModeChange}){
     this.#pointsContainer = pointsContainer;
     this.#onPointChange = onPointChange;
-
+    this.#offers = offers;
     this.#onModeChange = onModeChange;
+    this.#destinations = destinations;
   }
 
   #onDocumentKeyDown = (evt) => {
@@ -35,10 +38,20 @@ export default class PointPresenter {
     const prevPoint = this.#pointComponent;
     const prevEdit = this.#editComponent;
 
-    this.#point = point;
+    const curTypeOffers = this.#offers[point.type];
+
+    const curTypeDestination = this.#destinations.find(({ id }) => id === point.destination);
+
+    this.#point = {
+      ...point,
+    };
+
     this.#pointComponent = new TripsView(
       {
         point: this.#point,
+        offersObject: curTypeOffers,
+        curTypeDestination: curTypeDestination,
+
         onTripClick: () => {
           this.#replacePointToEdit();
           document.addEventListener('keydown', this.#onDocumentKeyDown);
@@ -51,6 +64,9 @@ export default class PointPresenter {
     this.#editComponent = new EditorView(
       {
         point: this.#point,
+        allOffers: this.#offers,
+        allDestinations: this.#destinations,
+        curTypeDestination: curTypeDestination,
         onSubmit: this.#onFormSubmit,
         deletePoint: this.#onDeletePoint
       }
