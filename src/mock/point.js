@@ -1,25 +1,30 @@
-import { getRandomArrayElement, getRandomInteger } from '../utils.js';
-import { DATE, POINT_TYPES, PRICE, DESTINATIONS } from '../consts.js';
-import { getRandomDestination } from './destination.js';
-import { getOfferByCurrentPointType } from './offer.js';
+import { getRandomArrayElement, getRandomInt } from '../utils';
+import { POINT_TYPES, DESTINATIONS, POINTS_COUNT, PHOTOS_COUNT, MAX_OFFER_ID, MAX_PRICE } from '../const';
+import { nanoid } from 'nanoid';
 
-export const generatePoint = () => {
-  const id = getRandomInteger(DESTINATIONS.length);
-  const basePrice = getRandomInteger(PRICE.min, PRICE.max);
-  const date = getRandomArrayElement(DATE);
-  const type = getRandomArrayElement(POINT_TYPES);
-  const offersId = getOfferByCurrentPointType(type).map((offer) => offer.id);
-  const destinationId = getRandomDestination().id;
-  const isFavorite = Boolean(getRandomInteger(1));
+const createPoint = () =>({
+  type: getRandomArrayElement(POINT_TYPES),
+  destination: getRandomArrayElement(DESTINATIONS),
+  cost: getRandomInt(MAX_PRICE),
+  date:{
+    start: Date(2024, 8, 20, 18, 30, 10, 0),
+    end: Date(2024, 8, 20, 20, 30, 10, 0)
+  },
+  offers:{
+    id: getRandomInt(MAX_OFFER_ID)
+  },
+  desctiption:'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra.',
+  photosSrc:[`https://loremflickr.com/248/152?random=${getRandomInt(PHOTOS_COUNT)}`],
+});
 
+const mockPoints = Array.from( {length: POINTS_COUNT} , createPoint);
+
+const getRandomPoint = () => {
+  const point = getRandomArrayElement(mockPoints);
   return {
-    id: id,
-    basePrice: basePrice,
-    dateFrom: date.from,
-    dateTo: date.to,
-    destination: destinationId,
-    isFavorite: isFavorite,
-    offers: offersId,
-    type: type
+    ...point,
+    id: nanoid(),
   };
 };
+
+export {getRandomPoint};

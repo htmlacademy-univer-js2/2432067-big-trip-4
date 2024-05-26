@@ -1,17 +1,15 @@
-function getRandomArrayElement(items) {
-  return items[Math.floor(Math.random() * items.length)];
-}
+import dayjs from 'dayjs';
 
-function getRandomInteger(min, max) {
-  return Math.round((max - min) * Math.random() + min);
-}
+const humanizeTaskDueDate = (dueDate, format) => dueDate ? dayjs(dueDate).format(format) : '';
 
-function getLastWord(string) {
-  const words = string.split(' ');
-  return words.at(-1);
-}
+const countDuration = (dateStart, dateEnd) => dayjs(dateEnd).diff(dateStart, 'm');
 
-function upperFirstChar(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-export { getRandomArrayElement, getRandomInteger, getLastWord, upperFirstChar};
+const getRandomInt = (maxNumber) => Math.floor(Math.random() * maxNumber);
+
+const getRandomArrayElement = (items) => items[getRandomInt(items.length)];
+
+const updateItem = (items, update) => {
+  const updatedItems = items.map((item) => (item.id === update.id ? update : item));
+  return updatedItems;
+};
+export{getRandomArrayElement, humanizeTaskDueDate, countDuration, getRandomInt, updateItem};
