@@ -52,7 +52,8 @@ export default class PointPresenter {
         onEditClick: () =>{
           this.#replaceEditToPoint();
           document.removeEventListener('keydown', this.#onDocumentKeyDown);
-        }
+        },
+        onPointChange: this.#onPointChange
       }
     );
 
