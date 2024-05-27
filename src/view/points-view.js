@@ -4,6 +4,7 @@ import AbstractView from '../framework/view/abstract-view.js';
 
 const createOffers = (offers, offersData) => {
   let res = '';
+
   offers.forEach((offerId) => {
     const curOfferData = offersData.find(({id}) => id === offerId);
     res += `
@@ -14,8 +15,10 @@ const createOffers = (offers, offersData) => {
     </li>
     `;
   });
+
   return res;
 };
+
 
 function createPointsTemplate(point, offersData, destinationData ) {
   return (
@@ -66,6 +69,7 @@ export default class TripsView extends AbstractView{
 
   constructor({point, onTripClick: onPointClick, onFavoriteClick, offersObject, curTypeDestination}){
     super();
+
     this.#point = point;
     this.#pointClick = onPointClick;
     this.#onFavoriteClick = onFavoriteClick;
