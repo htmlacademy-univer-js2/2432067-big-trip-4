@@ -5,6 +5,7 @@ const humanizeTaskDueDate = (dueDate, format) => dueDate ? dayjs(dueDate).format
 
 const countDuration = (dateStart, dateEnd) => {
   dayjs.extend(duration);
+
   const diff = dayjs.duration(dayjs(dateEnd).diff(dateStart));
 
   if (diff.asHours() < 1) {
@@ -22,6 +23,7 @@ const getRandomArrayElement = (items) => items[getRandomInt(items.length)];
 
 const updateItem = (items, update) => {
   const updatedItems = items.map((item) => (item.id === update.id ? update : item));
+
   return updatedItems;
 };
 
@@ -46,11 +48,9 @@ const sortByTime = (point1, point2) => (
   (new Date(point1.date.end) - new Date(point1.date.start))
 );
 
-const sortByPrice = (point1, point2) =>
-  point2.cost - point1.cost;
+const sortByPrice = (point1, point2) => point2.cost - point1.cost;
 
 const sortByDefault = (point1, point2) => {
-
   const weight = getWeightForNullDate(point1.date.start, point2.date.start);
 
   return weight ?? dayjs(point2.date.start).diff(dayjs(point1.date.start));

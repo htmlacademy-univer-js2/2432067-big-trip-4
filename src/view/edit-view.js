@@ -3,6 +3,7 @@ import { humanizeTaskDueDate } from '../utils.js';
 import { BLANC_TEST } from '../const.js';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import flatpickr from 'flatpickr';
+
 import 'flatpickr/dist/flatpickr.min.css';
 
 const createPicture = (picture) =>
@@ -132,7 +133,6 @@ const createEditorView = (point, allOffers, allDestinations) =>{
         </label>
         <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${cost}" ${isDisabled ? 'disabled' : ''}>
       </div>
-
         ${createButtons(isNew, isDisabled, isDeleting, isSaving)}
         <span class="visually-hidden">Open event</span>
       </button>
@@ -146,7 +146,7 @@ const createEditorView = (point, allOffers, allDestinations) =>{
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
-          ${createPictures(destination ? curDestinationData.pictures : [])}
+            ${createPictures(destination ? curDestinationData.pictures : [])}
           </div>
         </div>
       </section>
@@ -155,7 +155,6 @@ const createEditorView = (point, allOffers, allDestinations) =>{
     </li>
     `
   );};
-
 export default class EditorView extends AbstractStatefulView{
   #onSubmit;
   #datepickerFrom;
@@ -265,10 +264,12 @@ export default class EditorView extends AbstractStatefulView{
       .addEventListener('input', this.#onTypeChange);
 
     const checkboxOffers = this.element.querySelectorAll('.event__offer-checkbox');
+
     checkboxOffers.forEach((checkbox) => {
       checkbox.addEventListener('change', this.#onOffersChange);
-      this.#setDatepickers();
     });
+
+    this.#setDatepickers();
   }
 
   #onOffersChange = (evt) => {
@@ -331,7 +332,6 @@ export default class EditorView extends AbstractStatefulView{
   };
 
   static parsePointToState(point, isNew){
-
     return {
       ...point,
       isNew: isNew,

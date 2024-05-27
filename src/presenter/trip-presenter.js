@@ -11,16 +11,18 @@ import LoadingView from '../view/loading-view.js';
 import addPointButtonView from '../view/button-view.js';
 import Observable from '../framework/observable.js';
 import UiBlocker from '../framework/ui-blocker/ui-blocker.js';
+import TripInfoPresenter from './trip-info-presenter.js';
 
 export default class Presenter extends Observable{
   #pointsContainer = new TripsContainer();
   #headerElement;
   #mainContainerElement;
+  #tripMain;
   #loadingComponent;
   #pointsModel;
   #filterModel;
-
-  #noPointsComponent = null;
+  #noPointsComponent;
+  #tripInfoComponent;
   #sortElement = null;
   #currentSort = SORT_TYPES.DEFAULT;
   #filterType = FILTER_TYPES.ALL;
@@ -50,7 +52,9 @@ export default class Presenter extends Observable{
       filterModel,
       offersModel,
       destinationsModel,
+      tripMain,
     }){
+
     super();
     this.#headerElement = controlsDiv;
     this.#mainContainerElement = tripsSection;
@@ -58,6 +62,7 @@ export default class Presenter extends Observable{
     this.#filterModel = filterModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
+    this.#tripMain = tripMain;
 
     this.addObserver(this.#handleModelEvent);
 
@@ -68,8 +73,10 @@ export default class Presenter extends Observable{
     ]).then(() => {
       this._notify(UPDATE_TYPES.INIT);
     }).finally(() => {
-      render(this.addPointButtonComponent, document.querySelector('.page-body__container'));
+      this.#renderTripInfo();
       this.#renderFilters();
+
+      render(this.addPointButtonComponent, this.#tripMain);
 
     });
 
@@ -91,6 +98,7 @@ export default class Presenter extends Observable{
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
     const filteredPoints = filter[this.#filterType](points);
+
     switch (this.#currentSort) {
       case SORT_TYPES.BY_TIME:
         return filteredPoints.sort(sortByTime);
@@ -99,6 +107,7 @@ export default class Presenter extends Observable{
       case SORT_TYPES.DEFAULT:
         return filteredPoints.sort(sortByDefault);
     }
+
     return filteredPoints;
   }
 
@@ -112,6 +121,7 @@ export default class Presenter extends Observable{
         onModeChange: this.#onModeChange,
       }
     );
+
     pointPresenter.init(point);
     this.#pointPresenters.set(point.id, pointPresenter);
   };
@@ -131,14 +141,24 @@ export default class Presenter extends Observable{
 
   #renderFilters(){
     this.#filtersElement = new FilterPresenter({
-      filterContainer: this.#headerElement,
+      filterContainer: this.#tripMain,
       filterModel: this.#filterModel,
       pointsModel: this.#pointsModel
     });
   }
 
+  #renderTripInfo(){
+    this.#tripInfoComponent = new TripInfoPresenter({
+      tripMain: this.#tripMain,
+      pointsModel: this.#pointsModel,
+      offersModel: this.#offersModel,
+      destinationsModel: this.#destinationsModel,
+    });
+  }
+
   #handleViewAction = async (actionType, updateType, newPoint) => {
     this.#uiBlocker.block();
+
     switch (actionType) {
       case USER_ACTIONS.UPDATE_POINT:
         this.#pointPresenters.get(newPoint.id).setSaving();
@@ -148,6 +168,7 @@ export default class Presenter extends Observable{
           this.#pointPresenters.get(newPoint.id).setAbording();
         }
         break;
+
       case USER_ACTIONS.ADD_POINT:
         this.#addPointPresenter.setSaving();
         try{
@@ -156,6 +177,7 @@ export default class Presenter extends Observable{
           this.#addPointPresenter.setAbording();
         }
         break;
+
       case USER_ACTIONS.DELETE_POINT:
         this.#pointPresenters.get(newPoint.id).setDeleting();
         try{
@@ -174,14 +196,17 @@ export default class Presenter extends Observable{
       case UPDATE_TYPES.PATCH:
         this.#pointPresenters.get(data.id).init(data);
         break;
+
       case UPDATE_TYPES.MINOR:
         this.#clearComponents();
         this.#renderComponents();
         break;
+
       case UPDATE_TYPES.MAJOR:
         this.#clearComponents({resetSortType : true});
         this.#renderComponents();
         break;
+
       case UPDATE_TYPES.INIT:
         this.#addPointPresenter = new AddPointPresenter({
           pointsContainer: this.#pointsContainer,
@@ -194,6 +219,7 @@ export default class Presenter extends Observable{
         this.#isLoading = false;
         this.#clearComponents();
         this.#renderComponents();
+
         break;
     }
   };
@@ -219,6 +245,7 @@ export default class Presenter extends Observable{
       onSort: this.#onSort,
       currentSort: this.#currentSort
     });
+
     render(this.#sortElement, this.#mainContainerElement);
   }
 
@@ -226,16 +253,19 @@ export default class Presenter extends Observable{
     this.#addPointPresenter.destroy();
 
     this.#clearPoints();
+
     remove(this.#sortElement);
     remove(this.#loadingComponent);
 
     if (this.#noPointsComponent) {
       remove(this.#noPointsComponent);
     }
+
     if (resetSortType) {
       this.#currentSort = SORT_TYPES.DEFAULT;
     }
   }
+
 
   #renderPointsContainer(){
     render(this.#pointsContainer, this.#mainContainerElement);

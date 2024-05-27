@@ -47,7 +47,8 @@ export const BLANC_TEST =
     start: null,
     end: null,
   },
-  offers: [],
+  offers: [
+  ],
 };
 
 export const TIME_LIMIT = {
@@ -55,5 +56,5 @@ export const TIME_LIMIT = {
   UPPER_LIMIT: 1000,
 };
 
-export const AUTHORIZATION = 'Basic y16e6n415ya12nsj12jkosad';
+export const AUTHORIZATION = 'Basic s799vigq9mit24m';
 export const END_POINT = 'https://21.objects.htmlacademy.pro/big-trip';

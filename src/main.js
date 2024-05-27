@@ -1,7 +1,7 @@
 import TripPresenter from './presenter/trip-presenter.js';
 import PointsModel from './model/point-model.js';
 import FiltersModel from './model/filters-model.js';
-import PointsApiService from './api-service/point-api-service';
+import PointsApiService from './api-service/point-api-service.js';
 import { AUTHORIZATION, END_POINT } from './const.js';
 import OffersModel from './model/offers-model.js';
 import OffersApiService from './api-service/offers-api-service.js';
@@ -12,6 +12,7 @@ const pageBody = document.querySelector('.page-body');
 const mainContainer = pageBody.querySelector('.trip-events');
 const pointsContainer = pageBody.querySelector('.trip-events__list');
 const headerElement = pageBody.querySelector('.trip-controls');
+const tripMain = pageBody.querySelector('.trip-main');
 
 const points = new PointsModel({
   pointsApiService: new PointsApiService(END_POINT, AUTHORIZATION)
@@ -36,6 +37,7 @@ const tripPresenter = new TripPresenter(
     offersModel: offers,
     pointsModel: points,
     filterModel: filterModel,
+    tripMain: tripMain,
   }
 );
 

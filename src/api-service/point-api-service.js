@@ -1,4 +1,4 @@
-import ApiService from '../framework/api-service';
+import ApiService from '../framework/api-service.js';
 
 const Methods = {
   GET: 'GET',
@@ -46,7 +46,6 @@ export default class PointsApiService extends ApiService {
   }
 
   async deletePoint(point) {
-
     const response = await this._load({
       url: `points/${point.id}`,
       method: Methods.DELETE,

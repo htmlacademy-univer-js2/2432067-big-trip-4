@@ -15,6 +15,7 @@ export default class AddPointPresenter {
     this.#pointsContainer = pointsContainer.element;
     this.#onDataChange = onDataChange;
     this.#onDestroy = onDestroy;
+
     this.#offers = allOffers;
     this.#destinations = allDestinations;
   }
