@@ -10,8 +10,7 @@ import DestinationsApiService from './api-service/destinations-api-service.js';
 
 const pageBody = document.querySelector('.page-body');
 const mainContainer = pageBody.querySelector('.trip-events');
-const pointsContainer = pageBody.querySelector('.trip-events__list');
-const headerElement = pageBody.querySelector('.trip-controls');
+const pointsContainer = mainContainer.querySelector('.trip-events__list');
 const tripMain = pageBody.querySelector('.trip-main');
 
 const points = new PointsModel({
@@ -28,9 +27,8 @@ const destinations = new DestinationsModel({
 
 const filterModel = new FiltersModel();
 
-const tripPresenter = new TripPresenter(
+const presenter = new TripPresenter(
   {
-    controlsDiv: headerElement,
     tripsSection: mainContainer,
     pointsUl: pointsContainer,
     destinationsModel: destinations,
@@ -41,4 +39,4 @@ const tripPresenter = new TripPresenter(
   }
 );
 
-tripPresenter.init();
+presenter.init();

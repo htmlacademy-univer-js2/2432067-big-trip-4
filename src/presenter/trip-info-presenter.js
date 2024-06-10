@@ -1,35 +1,35 @@
-import { remove, render, replace } from '../framework/render';
-import TripInfoView from '../view/trip-info-view';
+import { remove, render, replace } from '../framework/render.js';
+import TripInfoModel from '../model/trip-info-model.js';
+import TripInfoView from '../view/trip-info-view.js';
 
 export default class TripInfoPresenter{
   #tripInfoComponent;
   #offersModel;
   #destinationsModel;
-  #pointsModel;
   #tripMain;
+  #model;
 
-  constructor({tripMain, pointsModel, offersModel, destinationsModel}){
+  constructor({tripMain, offersModel, destinationsModel}){
     this.#tripMain = tripMain;
-    this.#pointsModel = pointsModel;
     this.#offersModel = offersModel;
     this.#destinationsModel = destinationsModel;
-
-    this.#pointsModel.addObserver(this.#handleModelEvent);
-    this.init();
+    this.#model = null;
   }
 
-  init(){
+  init(points){
     const prevTripInfoComponent = this.#tripInfoComponent;
 
-    this.#tripInfoComponent = new TripInfoView({
-      pointsModel: this.#pointsModel,
+    this.#model = new TripInfoModel({
+      points: points,
       offersModel: this.#offersModel,
-      destinationsModel: this.#destinationsModel
+      destinationsModel: this.#destinationsModel,
     });
 
-    if (!prevTripInfoComponent) {
+    this.#tripInfoComponent = new TripInfoView(this.#model.info);
 
+    if (!prevTripInfoComponent) {
       render(this.#tripInfoComponent, this.#tripMain);
+
       return;
     }
 
@@ -37,7 +37,7 @@ export default class TripInfoPresenter{
     remove(prevTripInfoComponent);
   }
 
-  #handleModelEvent = () => {
-    this.init();
+  destroy = () => {
+    remove(this.#tripInfoComponent);
   };
 }
